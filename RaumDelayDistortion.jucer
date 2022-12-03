@@ -4,7 +4,7 @@
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
               jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST3"
               pluginAUMainType="'aufx'" pluginVST3Category="Delay,Distortion,Fx"
-              pluginName="RaumDelayDistortion">
+              pluginName="RaumDelayDistortion" cppLanguageStandard="20">
   <MAINGROUP id="VlEOJW" name="RaumDelayDistortion">
     <GROUP id="{B57C5F18-8C74-546F-577A-E0C20AC0A322}" name="Source">
       <FILE id="d3Bzmp" name="PluginProcessor.cpp" compile="1" resource="0"
