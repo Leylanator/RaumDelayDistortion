@@ -30,14 +30,12 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
     std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);}))
 })
 {
-    
-    treeState.addParameterListener("input", this);
-    
+    getState().addParameterListener("input", RaumDelayDistortionAudioProcessor*); 
 }
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
-    treeState.removeParameterListener("input", *this);
+    getState().removeParameterListener("input", RaumDelayDistortionAudioProcessor*);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProcessor::createParameterLayout()
@@ -50,7 +48,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProc
 
 void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    gainModule.setGainDecibels(treeState.getRawParameterValue("input"->load());
+    gainModule.setGainDecibels(getState.getRawParameterValue("input"->load());
 }
 
 //==============================================================================
@@ -128,7 +126,7 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
     
     gainModule.prepare(spec); 
     gainModule.setRampDurationSeconds(0.02 ) ;    // Avoids popping when value is changed, say during moving a slider or knob
-    gainModule.setGainDecibels(treeState.getRawParameterValue("input")->load());
+    gainModule.setGainDecibels(getState().getRawParameterValue("input")->load());
 
 }
 
