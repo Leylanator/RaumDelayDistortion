@@ -30,12 +30,12 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
     std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);}))
 })
 {
-    getState().addParameterListener("input", RaumDelayDistortionAudioProcessor*); 
+    getState().addParameterListener("input", this); 
 }
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
-    getState().removeParameterListener("input", RaumDelayDistortionAudioProcessor*);
+    getState().removeParameterListener("input", this);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProcessor::createParameterLayout()

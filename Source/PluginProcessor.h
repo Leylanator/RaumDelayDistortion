@@ -61,6 +61,9 @@ public:
 private:
 
     juce::AudioProcessorValueTreeState pluginState;
+
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void parameterChanged (const juce::String& parameterID, float newValue) override;
     
     juce::dsp::Gain<float> gainModule;
 
