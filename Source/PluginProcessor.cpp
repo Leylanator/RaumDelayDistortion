@@ -48,7 +48,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProc
 
 void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    gainModule.setGainDecibels(getState.getRawParameterValue("input"->load());
+    gainModule.setGainDecibels(getState().getRawParameterValue("input"->load());
 }
 
 //==============================================================================
@@ -122,10 +122,10 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.sampleRate = sampleRate;
-    spec.numChannels = getTotalNumOutputChannels;
+    spec.numChannels = getTotalNumOutputChannels();
     
     gainModule.prepare(spec); 
-    gainModule.setRampDurationSeconds(0.02 ) ;    // Avoids popping when value is changed, say during moving a slider or knob
+    gainModule.setRampDurationSeconds(0.02);    // Avoids popping when value is changed, say during moving a slider or knob
     gainModule.setGainDecibels(getState().getRawParameterValue("input")->load());
 
 }
