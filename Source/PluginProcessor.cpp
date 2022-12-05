@@ -21,7 +21,7 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
 #endif
                   )
 #endif
-,pluginState(*this,nullptr, "DelayState", {
+,pluginState(*this,nullptr, "PARAMETERS", {
     std::make_unique<juce::AudioParameterFloat>("Delay Time Left","Delay Time Left ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Delay Time Right","Delay Time Right ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Feedback","Feedback ",juce::NormalisableRange<float>(0.,1.),0.33,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
@@ -31,12 +31,26 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
 })
 {
     
-    
+    treeState.addParameterListener("input", this);
     
 }
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
+    treeState.removeParameterListener("input", *this);
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProcessor::createParameterLayout()
+{  
+    std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
+    auto pInput = std::make_unique<juce::AudioParameterFloat>("input", "input", 0.0f, 20.0f, 0.0f);
+    params.push_back(std::move(pInput));
+    return { params.begin(), params.end() };
+}
+
+void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
+{
+    gainModule.setGainDecibels(treeState.getRawParameterValue("input"->load());
 }
 
 //==============================================================================
@@ -106,12 +120,24 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = getTotalNumOutputChannels;
+    
+    gainModule.prepare(spec); 
+    gainModule.setRampDurationSeconds(0.02 ) ;    // Avoids popping when value is changed, say during moving a slider or knob
+    gainModule.setGainDecibels(treeState.getRawParameterValue("input")->load());
+
 }
 
 void RaumDelayDistortionAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+    
+    gainModule.reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -161,12 +187,17 @@ void RaumDelayDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
         
         // ..do something to the data...
     }
+    
+    juce::dsp::AudioBlock<float> audioBlock {buffer};
+
+    gainModule.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
 }
 
 //==============================================================================

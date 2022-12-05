@@ -62,6 +62,8 @@ private:
 
     juce::AudioProcessorValueTreeState pluginState;
     
+    juce::dsp::Gain<float> gainModule;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaumDelayDistortionAudioProcessor)
 };
