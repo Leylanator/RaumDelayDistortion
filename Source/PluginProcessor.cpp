@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-                            // !!! Delay not working !!!
+
 //==============================================================================
 RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -25,30 +25,25 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
     std::make_unique<juce::AudioParameterFloat>("Delay Time Left","Delay Time Left ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Delay Time Right","Delay Time Right ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Feedback","Feedback ",juce::NormalisableRange<float>(0.,1.),0.33,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
-    std::make_unique<juce::AudioParameterBool>("Ping Pong","Ping Pong",false,juce::AudioParameterBoolAttributes().withStringFromValueFunction ([] (auto x, auto) { return x ? "On" : "Off"; }).withLabel ("enabled")),
+    std::make_unique<juce::AudioParameterBool>("Ping Pong","Ping Pong ",false,juce::AudioParameterBoolAttributes().withStringFromValueFunction ([] (auto x, auto) { return x ? "On" : "Off"; }).withLabel ("enabled")),
     std::make_unique<juce::AudioParameterFloat>("LFO Speed","LFO Speed ",juce::NormalisableRange<float>(0.,2),0.33,juce::AudioParameterFloatAttributes().withLabel("HZ")),
-    std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);}))
+    std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
+        std::make_unique<juce::AudioParameterFloat>("Gain", "Gain ",juce::NormalisableRange<float>(0.0f, 20.0f),10.0f,juce::AudioParameterFloatAttributes().withLabel("dB")),
 })
 {
-    getState().addParameterListener("input", this); 
+    pluginState.addParameterListener("input", this);         //From here    
+
 }
+
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
-    getState().removeParameterListener("input", this);
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProcessor::createParameterLayout()
-{  
-    std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
-    auto pInput = std::make_unique<juce::AudioParameterFloat>("input", "input", 0.0f, 20.0f, 0.0f);
-    params.push_back(std::move(pInput));
-    return { params.begin(), params.end() };
+    pluginState.removeParameterListener("input", this);      //To here no worky
 }
 
 void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    gainModule.setGainDecibels(getState().getRawParameterValue("input")->load());
+    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
 }
 
 //==============================================================================
@@ -126,7 +121,7 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
     
     gainModule.prepare(spec); 
     gainModule.setRampDurationSeconds(0.02);    // Avoids popping when value is changed, say during moving a slider or knob
-    gainModule.setGainDecibels(getState().getRawParameterValue("input")->load());
+    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
 
 }
 

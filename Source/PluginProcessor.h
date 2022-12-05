@@ -17,6 +17,7 @@ class RaumDelayDistortionAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
+                            , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -56,13 +57,13 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    juce::AudioProcessorValueTreeState& getState();
+//    juce::AudioProcessorValueTreeState& getState();
 
 private:
 
     juce::AudioProcessorValueTreeState pluginState;
 
-    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+   // juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged (const juce::String& parameterID, float newValue);
     
     juce::dsp::Gain<float> gainModule;
