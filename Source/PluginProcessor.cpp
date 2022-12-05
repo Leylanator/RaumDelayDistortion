@@ -48,7 +48,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout RaumDelayDistortionAudioProc
 
 void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    gainModule.setGainDecibels(getState().getRawParameterValue("input"->load());
+    gainModule.setGainDecibels(getState().getRawParameterValue("input")->load());
 }
 
 //==============================================================================
