@@ -4,7 +4,7 @@
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
               jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST3"
               pluginAUMainType="'aufx'" pluginVST3Category="Delay,Distortion,Fx"
-              pluginName="RaumDelayDistortion">
+              pluginName="RaumDelayDistortion" cppLanguageStandard="20">
   <MAINGROUP id="VlEOJW" name="RaumDelayDistortion">
     <GROUP id="{B57C5F18-8C74-546F-577A-E0C20AC0A322}" name="Source">
       <FILE id="d3Bzmp" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -15,6 +15,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="hArGmD" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="mFOwe0" name="SoftClip.cpp" compile="1" resource="0" file="Source/SoftClip.cpp"/>
+    <FILE id="XqZKeX" name="SoftClip.h" compile="0" resource="0" file="Source/SoftClip.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
@@ -36,6 +38,7 @@
         <MODULEPATH id="juce_graphics" path="../../juce"/>
         <MODULEPATH id="juce_gui_basics" path="../../juce"/>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../usr/share/juce/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -49,6 +52,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

@@ -21,22 +21,31 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
 #endif
                   )
 #endif
-,pluginState(*this,nullptr, "DelayState", {
+,pluginState(*this,nullptr, "PARAMETERS", {
     std::make_unique<juce::AudioParameterFloat>("Delay Time Left","Delay Time Left ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Delay Time Right","Delay Time Right ",juce::NormalisableRange<float>(0.001,5),0.1,juce::AudioParameterFloatAttributes().withLabel("MS")),
     std::make_unique<juce::AudioParameterFloat>("Feedback","Feedback ",juce::NormalisableRange<float>(0.,1.),0.33,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
-    std::make_unique<juce::AudioParameterBool>("Ping Pong","Ping Pong",false,juce::AudioParameterBoolAttributes().withStringFromValueFunction ([] (auto x, auto) { return x ? "On" : "Off"; }).withLabel ("enabled")),
+    std::make_unique<juce::AudioParameterBool>("Ping Pong","Ping Pong ",false,juce::AudioParameterBoolAttributes().withStringFromValueFunction ([] (auto x, auto) { return x ? "On" : "Off"; }).withLabel ("enabled")),
     std::make_unique<juce::AudioParameterFloat>("LFO Speed","LFO Speed ",juce::NormalisableRange<float>(0.,2),0.33,juce::AudioParameterFloatAttributes().withLabel("HZ")),
-    std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);}))
+    std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
+        std::make_unique<juce::AudioParameterFloat>("Gain", "Gain ",juce::NormalisableRange<float>(0.0f, 20.0f),10.0f,juce::AudioParameterFloatAttributes().withLabel("dB")),
 })
 {
-    
-    
-    
+    pluginState.addParameterListener("Gain", this);
+
 }
+
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
+    pluginState.removeParameterListener("Gain", this);
+}
+
+void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
+{
+//    gainModule.setGainDecibels(pluginState.getRawParameterValue("Gain")->load());
+    softClipperModule.setDrive(pluginState.getRawParameterValue("Gain")->load());
+
 }
 
 //==============================================================================
@@ -106,12 +115,26 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = getTotalNumOutputChannels();
+    
+//    gainModule.prepare(spec); 
+//    gainModule.setRampDurationSeconds(0.02);    // Avoids popping when value is changed, say during moving a slider or knob
+//    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
+
+    softClipperModule.prepare(spec);
+    softClipperModule.setDrive(pluginState.getRawParameterValue("Gain")->load());
 }
 
 void RaumDelayDistortionAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
+   
+//    gainModule.reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -161,12 +184,20 @@ void RaumDelayDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
         
         // ..do something to the data...
     }
+    
+    juce::dsp::AudioBlock<float> audioBlock {buffer};
+
+//    gainModule.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+    
+    softClipperModule.processBlock(audioBlock);
+
 }
 
 //==============================================================================
