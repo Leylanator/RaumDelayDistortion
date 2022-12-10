@@ -31,19 +31,21 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
         std::make_unique<juce::AudioParameterFloat>("Gain", "Gain ",juce::NormalisableRange<float>(0.0f, 20.0f),10.0f,juce::AudioParameterFloatAttributes().withLabel("dB")),
 })
 {
-    pluginState.addParameterListener("input", this);         //From here    
+    pluginState.addParameterListener("Gain", this);
 
 }
 
 
 RaumDelayDistortionAudioProcessor::~RaumDelayDistortionAudioProcessor()
 {
-    pluginState.removeParameterListener("input", this);      //To here no worky
+    pluginState.removeParameterListener("Gain", this);
 }
 
 void RaumDelayDistortionAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
+//    gainModule.setGainDecibels(pluginState.getRawParameterValue("Gain")->load());
+    softClipperModule.setDrive(pluginState.getRawParameterValue("Gain")->load());
+
 }
 
 //==============================================================================
@@ -119,18 +121,20 @@ void RaumDelayDistortionAudioProcessor::prepareToPlay (double sampleRate, int sa
     spec.sampleRate = sampleRate;
     spec.numChannels = getTotalNumOutputChannels();
     
-    gainModule.prepare(spec); 
-    gainModule.setRampDurationSeconds(0.02);    // Avoids popping when value is changed, say during moving a slider or knob
-    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
+//    gainModule.prepare(spec); 
+//    gainModule.setRampDurationSeconds(0.02);    // Avoids popping when value is changed, say during moving a slider or knob
+//    gainModule.setGainDecibels(pluginState.getRawParameterValue("input")->load());
 
+    softClipperModule.prepare(spec);
+    softClipperModule.setDrive(pluginState.getRawParameterValue("Gain")->load());
 }
 
 void RaumDelayDistortionAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-    
-    gainModule.reset();
+   
+//    gainModule.reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -190,7 +194,10 @@ void RaumDelayDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     
     juce::dsp::AudioBlock<float> audioBlock {buffer};
 
-    gainModule.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+//    gainModule.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+    
+    softClipperModule.processBlock(audioBlock);
+
 }
 
 //==============================================================================

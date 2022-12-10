@@ -14,14 +14,19 @@ RaumDelayDistortionAudioProcessorEditor::RaumDelayDistortionAudioProcessorEditor
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     
-    title.setText("Delay", juce::dontSendNotification);
+    titleDelay.setText("Delay", juce::dontSendNotification);
     
-    addAndMakeVisible(title);
+    addAndMakeVisible(titleDelay);
     addAndMakeVisible(leftDelayTimeSlider);
     addAndMakeVisible(righDelayTimeSlider);
     addAndMakeVisible(lfoSpeedSlider);
     addAndMakeVisible(lfoAmountSlider);
     addAndMakeVisible(pingPongToggle);
+
+    titleDistortion.setText("Distortion", juce::dontSendNotification);
+
+    addAndMakeVisible(titleDistortion);
+    addAndMakeVisible(gainAmountSlider);
     
     
     // Make sure that before the constructor has finished, you've set the
@@ -52,7 +57,7 @@ void RaumDelayDistortionAudioProcessorEditor::resized()
     auto unitHeight = bounds.getHeight() * 0.125;
     auto margin = 4;
     
-    title.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
+    titleDelay.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
     
     leftDelayTimeSlider.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
     righDelayTimeSlider.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
@@ -60,5 +65,11 @@ void RaumDelayDistortionAudioProcessorEditor::resized()
     lfoAmountSlider.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
     
     pingPongToggle.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
+
+
+    titleDistortion.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
+
+    gainAmountSlider.setBounds(bounds.removeFromTop(unitHeight).reduced(margin));
+
     
 }

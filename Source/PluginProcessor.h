@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SoftClip.h"
 
 //==============================================================================
 /**
@@ -67,6 +68,8 @@ private:
     void parameterChanged (const juce::String& parameterID, float newValue);
     
     juce::dsp::Gain<float> gainModule;
+
+    SoftClipper softClipperModule;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaumDelayDistortionAudioProcessor)

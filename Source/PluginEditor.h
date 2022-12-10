@@ -29,9 +29,9 @@ private:
     // access the processor object that created it.
     RaumDelayDistortionAudioProcessor& audioProcessor;
 
-    juce::Slider leftDelayTimeSlider,righDelayTimeSlider,lfoSpeedSlider,lfoAmountSlider;
+    juce::Slider leftDelayTimeSlider,righDelayTimeSlider,lfoSpeedSlider,lfoAmountSlider, gainAmountSlider;
     juce::ToggleButton pingPongToggle;
-    juce::Label title;
+    juce::Label titleDelay, titleDistortion;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RaumDelayDistortionAudioProcessorEditor)
 };
