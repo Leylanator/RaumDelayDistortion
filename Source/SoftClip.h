@@ -3,16 +3,7 @@
 #include <vector>
 #include <math.h>
 
-
-
-
-
-
 #pragma once
-
-#include <JuceHeader.h>
-
-#define PI 3.1415926535897931
 
 class SoftClipper
 {
@@ -30,7 +21,7 @@ public:
             for (int sample = 0; sample < block.getNumSamples(); ++sample)
             {
                 // This Soft Clipper is based off of Eric Tarr's example in the book 'Hack Audio'
-                data[sample] = 2.0 / PI * std::atan(data[sample] * m_Drive.getNextValue());
+                data[sample] = 2.0 / M_PI * std::atan(data[sample] * m_Drive.getNextValue());
             }
         }
     }

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Delay.h"
 #include "SoftClip.h"
 
 //==============================================================================

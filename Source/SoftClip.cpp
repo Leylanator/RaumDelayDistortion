@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 #include "SoftClip.h"
 
 SoftClipper::SoftClipper() : m_SampleRate(48000.0f), m_Drive(1.0)
