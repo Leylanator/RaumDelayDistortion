@@ -1,8 +1,8 @@
-
-
 #include <iostream>
 #include <vector>
 #include <math.h>
+
+#pragma once
 
 class DelayUnit
 {
@@ -87,19 +87,3 @@ class DelayUnit
 	}
 	
 };
-
-int main(int argc, const char * argv[])
-{
-
-	printf("success");
-	
-	DelayUnit del1(10);
-	del1.printBuffer();
-
-	for(int n = 0 ; n < 100 ; ++n)
-	{
-		del1.sum(0.1);
-	}
-	
-	return 0;
-}

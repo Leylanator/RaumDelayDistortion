@@ -28,7 +28,7 @@ RaumDelayDistortionAudioProcessor::RaumDelayDistortionAudioProcessor()
     std::make_unique<juce::AudioParameterBool>("Ping Pong","Ping Pong ",false,juce::AudioParameterBoolAttributes().withStringFromValueFunction ([] (auto x, auto) { return x ? "On" : "Off"; }).withLabel ("enabled")),
     std::make_unique<juce::AudioParameterFloat>("LFO Speed","LFO Speed ",juce::NormalisableRange<float>(0.,2),0.33,juce::AudioParameterFloatAttributes().withLabel("HZ")),
     std::make_unique<juce::AudioParameterFloat>("LFO Amount","LFO Amount ",juce::NormalisableRange<float>(0.,1.),0.,juce::AudioParameterFloatAttributes().withLabel("%").withStringFromValueFunction([](auto x, auto){return juce::String(x*100);})),
-        std::make_unique<juce::AudioParameterFloat>("Gain", "Gain ",juce::NormalisableRange<float>(0.0f, 20.0f),10.0f,juce::AudioParameterFloatAttributes().withLabel("dB")),
+        std::make_unique<juce::AudioParameterFloat>("Gain", "Gain ",juce::NormalisableRange<float>(0.0f, 30.0f),10.0f,juce::AudioParameterFloatAttributes().withLabel("dB")),
 })
 {
     pluginState.addParameterListener("Gain", this);
